@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宁静编程</title>
+  <link rel="stylesheet" href="index.css">
+
+</head>
+
+<body>
+  <div class="back-box">
+    <div class="bor-box">
+      <!-- 文章列表 -->
+      <div id="articleContent"></div>
+    </div>
+
+    <div class="postcard">
+      <div class="postcard-left">
+        <div class="postcard-information">
+          <div class="postcard-box">联</div>
+          <div class="postcard-box">系</div>
+          <div class="postcard-box">方</div>
+          <div class="postcard-box">式</div>
+          <div class="postcard-box">!</div>
+          <div class="postcard-box">!</div>
+        </div>
+        <img src="image/微信图片_202309100855081.jpg" alt="明信片图片">
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="postcard-right">
+        <div class="avatar">
+          <img src="./image/微信图片_202309101151101.jpg" alt="Avatar">
+          <span class="name">宁 静</span>
+        </div>
+
+        <div class="text-box">
+          <h3 onclick="copyTextToClipboard('ningjingbiancheng')">微信: ningjingbiancheng</h3>
+          <h3 onclick="copyTextToClipboard('1310569600')">Q Q: 1310569600</h3>
+          <h3 onclick="copyTextToClipboard('15884536541')">手机: 15884536541</h3>
+        </div>
+      </div>
+      
+      
+    </div>
+
+  </div>
+  <script src="data.js"></script>
+  <script>
+    function toggleItem(id) {
+      var item = document.getElementById(id);
+      var items = item.getElementsByTagName("p");
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].classList.contains("hidden")) {
+          items[i].classList.remove("hidden");
+        } else {
+          items[i].classList.add("hidden");
+        }
+      }
+    }
+
+    
+    function copyTextToClipboard(text) {
+      navigator.clipboard.writeText(text).then(function() {
+        console.log('复制成功！');
+      }, function(err) {
+        console.error('复制失败:', err);
+      });
+    }
+
+    function getValue(data) {
+      let src = ''
+      data.value.forEach((x, index) => {
+        src += `${index != 0 ? '<br>' : '' }${x}`
+      })
+
+      data.highlight.forEach(word => {
+        src = src.replace(new RegExp(word, 'g'), `<span class="textBold">${word}</span>`);
+      });
+      return src;
+    }
+
+    function defaultCollapse() {
+      const idArr = data.map(x => x.id)
+      idArr.forEach(x => {
+        toggleItem(x)
+      })
+    }
+
+    function fetchJsonFile() {
+      data.forEach((x, index) => {
+        const titleDiv = document.createElement("div");
+        titleDiv.innerHTML = x.title;
+        titleDiv.className = 'article-title';
+        titleDiv.onclick = function() {
+          toggleItem(x.id)
+        };
+
+        document.getElementById("articleContent").appendChild(titleDiv);
+
+        const conterDiv = `
+        <div id="${x.id}">
+          <p class="article-canter">
+            ${getValue(x)}
+          </p>
+        </div>
+        `
+        const conterDivContainer = document.createElement('div');
+        conterDivContainer.innerHTML = conterDiv;
+
+        document.getElementById("articleContent").appendChild(conterDivContainer);
+      });
+    }
+
+    fetchJsonFile()
+    defaultCollapse()
+
+  </script>
+</body>
+</html>
